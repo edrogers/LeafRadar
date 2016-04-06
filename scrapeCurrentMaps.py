@@ -43,7 +43,7 @@ for i in range(10) :
     districtNum=i
     
     #Download a map
-    httpRequestURL="{}{}.pdf".format(urlBase,i)
+    httpRequestURL="{}{}.pdf".format(urlBase,i+1)
     r=requests.get(httpRequestURL)
     mapFileName="{}/map{}.pdf".format(dirName,i)
     mapFile = open(mapFileName,'wb')
@@ -52,8 +52,11 @@ for i in range(10) :
 
     #Convert the map content
     mapFileGIFName="{}/map{}.gif".format(dirName,i)
-    os.system("convert {}/{} {}".format(dirName,mapFileName,
-                                        mapFileGIFName))
+    print "convert {} {}".format(mapFileName,
+                                mapFileGIFName)
+
+    os.system("convert {} {}".format(mapFileName,
+                                    mapFileGIFName))
     #Convert GIF to RGB
     mapIMG=Image.open("{}".format(mapFileGIFName))
     mapRGB=mapIMG.convert('RGB')
