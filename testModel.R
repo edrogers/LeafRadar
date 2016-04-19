@@ -11,6 +11,19 @@ leafData <- leafData %>% dcast(Time.Stamp ~ Area,value.var="Status")
 leafData$Time.Stamp <- as.POSIXct(leafData$Time.Stamp,
                                   origin = "1970-01-01",
                                   tz="America/Chicago")
+
+# Remove consecutive duplicate entries (ignoring differences in timestamp)
+#  Done by using a slick hack with rowMeans and booleans. Essentially,
+#  the first row is demanded with c(TRUE,...), and all other rows are 
+#  compared to their subsequent neighbor (ignoring the first column)
+#  and if there are any differences between the neighbors, this row is
+#  also kept. Otherwise, it is dropped. To apply this trick, all NA 
+#  values must be temporarily switched out with "NA" placeholders, and
+#  reverted to NA values afterward.
+
+leafData[is.na(leafData)] <- "NA"
+leafData <- leafData[c(TRUE,rowMeans(tail(leafData[,-1],-1) != head(leafData[,-1],-1))>0),]
+
 timeStamp <- leafData$Time.Stamp
 leafData <- leafData[,-1]
 # Add a new category, "Recently Done", that fills two rows after any
@@ -26,19 +39,19 @@ leafDataWest <- leafData %>%
   select(-starts_with("Area07")) %>%
   select(-starts_with("Area09"))
 
-targetArea <- "Area04_012"
+targetArea <- "Area10_001"
 generateModelData <- function(leafDataWest,targetArea) {
   
   # Select only the columns for Area Statuses
   leafDataWestStatuses <- leafDataWest %>%
     select(matches("Area[0-9]+_[0-9]+$"))
   
-  # Drop any rows that have 100% "Done" status
-  rowsNotAllDone <- rowMeans(leafDataWestStatuses!="Done")>0
-  leafDataWestStatuses <- leafDataWestStatuses[rowsNotAllDone,]
+  # Drop any rows that lack "Current" status
+  rowsWithCurrent <- rowSums(leafDataWestStatuses=="Current")>0
+  leafDataWestStatuses <- leafDataWestStatuses[rowsWithCurrent,]
 
   # Grab the time stamp column
-  timeStamp      <- leafDataWest[rowsNotAllDone,"Time.Stamp"]
+  timeStamp      <- leafDataWest[rowsWithCurrent,"Time.Stamp"]
   
   # Rearrange data.frame so that target area is last column
   #  Column order is otherwise unchanged. ("Cut the deck")
@@ -85,4 +98,34 @@ generateModelData <- function(leafDataWest,targetArea) {
 }
 
 thisAreaModel <- cbind(Area=targetArea,generateModelData(leafDataWest,targetArea))
-predict(model,interval="prediction",newdata = thisAreaModel)
+(pred.pred <- predict(model,interval="prediction",newdata = thisAreaModel))
+mean <- tail(pred.pred[,"fit"],n=1)
+sd <- (tail(pred.pred[,"fit"],n=1)-tail(pred.pred[,"lwr"],n=1))/1.96
+
+# Build a list of business days going 60 days in either direction
+madisonHolidays <- c(holidayNYSE(2016),timeDate("2015-11-25 05:00:00",format="%Y-%m-%d %H:%M:%S",FinCenter = "NewYork"))
+cal <- Calendar(madisonHolidays,weekdays = c("saturday","sunday"))
+today <- tail(thisAreaModel$timeStamps,n=1)
+bizDayList <- bizseq(today-60*24*60*60,today+60*24*60*60,cal)
+# Which day in this list == today?
+nToday <- which(bizDayList==as.Date(today))
+bizDayListPretty <- format(bizDayList,"%a, %b %d")
+
+dataForBarChart <- data.frame(day=character(0),
+                              prob=numeric(0),
+                              prettyBizDays=character(0),
+                              stringsAsFactors = FALSE)
+numBarsDivTwo <- ceiling(qnorm(0.99)*sd)
+for (i in -numBarsDivTwo:numBarsDivTwo) {
+  dataForBarChart[nrow(dataForBarChart)+1,] <- 
+    c(paste0(round(mean,2),"+",i),
+      pnorm(ceiling(mean)+i,mean=mean,sd=sd)-pnorm(floor(mean)+i,mean=mean,sd=sd),
+      bizDayListPretty[nToday+floor(mean)+i])
+}
+
+dataForBarChart$day           <- factor(dataForBarChart$day,levels=dataForBarChart$day)
+dataForBarChart$prettyBizDays <- factor(dataForBarChart$prettyBizDays,levels=dataForBarChart$prettyBizDays)
+dataForBarChart$prob          <- as.numeric(dataForBarChart$prob)
+
+ggplot(data=dataForBarChart, aes(x=prettyBizDays, y=prob)) +
+  geom_bar(stat="identity")+xlab("")+ggtitle(paste0("Likely Pickup Days for ",targetArea))
