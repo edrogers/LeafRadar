@@ -2,6 +2,11 @@ library(reshape2)
 library(tidyr)
 library(dplyr)
 library(FSA)
+library(scales)
+library(grid)
+library(timeDate)
+library(bizdays)
+library(ggplot2)
 
 model <- readRDS("model.rds")
 
@@ -39,7 +44,7 @@ leafDataWest <- leafData %>%
   select(-starts_with("Area07")) %>%
   select(-starts_with("Area09"))
 
-targetArea <- "Area10_001"
+targetArea <- "Area02_001"
 generateModelData <- function(leafDataWest,targetArea) {
   
   # Select only the columns for Area Statuses
@@ -123,9 +128,24 @@ for (i in -numBarsDivTwo:numBarsDivTwo) {
       bizDayListPretty[nToday+floor(mean)+i])
 }
 
-dataForBarChart$day           <- factor(dataForBarChart$day,levels=dataForBarChart$day)
-dataForBarChart$prettyBizDays <- factor(dataForBarChart$prettyBizDays,levels=dataForBarChart$prettyBizDays)
+dataForBarChart$day           <- factor(dataForBarChart$day,levels=rev(dataForBarChart$day))
+dataForBarChart$prettyBizDays <- factor(dataForBarChart$prettyBizDays,levels=rev(dataForBarChart$prettyBizDays))
 dataForBarChart$prob          <- as.numeric(dataForBarChart$prob)
 
-ggplot(data=dataForBarChart, aes(x=prettyBizDays, y=prob)) +
-  geom_bar(stat="identity")+xlab("")+ggtitle(paste0("Likely Pickup Days for ",targetArea))
+green <- "#87B287"
+
+g <- ggplot(data=dataForBarChart, aes(x=prettyBizDays, y=prob)) +
+  geom_bar(fill=green,colour=green,stat="identity")+
+  scale_y_continuous(labels=percent_format())+
+  coord_flip()+
+  xlab("")+ylab("")+ggtitle("Likely Pickup Days")+
+  theme(axis.text.x = element_text(vjust=0.5, size=12),
+        axis.ticks.x = element_line(colour = "white"),
+        axis.ticks.y = element_line(colour = "white"),
+        axis.text.y = element_text(colour="black",vjust=0.5, hjust=1, size=16, margin=margin(5,-15,10,5,"pt")),
+        panel.background = element_rect(fill="white"),
+        panel.grid.major.x = element_line(colour="#D0D0D0",size=.75),
+        panel.grid.major.y = element_line(colour="white"),
+        panel.grid.minor   = element_line(colour="white"),
+        plot.title = element_text(size=24,margin=margin(10,0,20,0,"pt")))
+print(g)
