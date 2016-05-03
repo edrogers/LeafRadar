@@ -1,12 +1,12 @@
 library(reshape2)
 library(tidyr)
 library(dplyr)
-library(FSA)
 library(scales)
 library(grid)
 library(timeDate)
 library(bizdays)
 library(ggplot2)
+library(Cairo)
 
 model <- readRDS("model.rds")
 
@@ -44,7 +44,7 @@ leafDataWest <- leafData %>%
   select(-starts_with("Area07")) %>%
   select(-starts_with("Area09"))
 
-targetArea <- "Area02_001"
+targetArea <- "Area10_001"
 generateModelData <- function(leafDataWest,targetArea) {
   
   # Select only the columns for Area Statuses
@@ -86,6 +86,9 @@ generateModelData <- function(leafDataWest,targetArea) {
   
 #   # Mask out data from after last pickup of the year
 #   #  (nDaysTilPickup is not a meaningful number here)
+#   rcumsum <- function(vec) {
+#     rev(cumsum(rev(vec)))
+#   }
 #   afterLastPickup <- rcumsum(as.numeric(leafDataWestStatuses[,targetArea]=="Current"))==0
 #   nDaysTilPickup <- nDaysTilPickup[!afterLastPickup]
 #   nColsFromCurrent <- nColsFromCurrent[!afterLastPickup]
@@ -112,8 +115,8 @@ madisonHolidays <- c(holidayNYSE(2016),timeDate("2015-11-25 05:00:00",format="%Y
 cal <- Calendar(madisonHolidays,weekdays = c("saturday","sunday"))
 today <- tail(thisAreaModel$timeStamps,n=1)
 bizDayList <- bizseq(today-60*24*60*60,today+60*24*60*60,cal)
-# Which day in this list == today?
-nToday <- which(bizDayList==as.Date(today))
+# Which day in this list is the latest day <= today?
+nToday <- tail(which(bizDayList<=as.Date(today)),n=1)
 bizDayListPretty <- format(bizDayList,"%a, %b %d")
 
 dataForBarChart <- data.frame(day=character(0),
@@ -140,12 +143,16 @@ g <- ggplot(data=dataForBarChart, aes(x=prettyBizDays, y=prob)) +
   coord_flip()+
   xlab("")+ylab("")+ggtitle("Likely Pickup Days")+
   theme(axis.text.x = element_text(vjust=0.5, size=12),
-        axis.ticks.x = element_line(colour = "white"),
-        axis.ticks.y = element_line(colour = "white"),
+        axis.ticks.x = element_line(colour = "white", size=0),
+        axis.ticks.y = element_line(colour = "white", size=0),
         axis.text.y = element_text(colour="black",vjust=0.5, hjust=1, size=16, margin=margin(5,-15,10,5,"pt")),
         panel.background = element_rect(fill="white"),
         panel.grid.major.x = element_line(colour="#D0D0D0",size=.75),
         panel.grid.major.y = element_line(colour="white"),
         panel.grid.minor   = element_line(colour="white"),
         plot.title = element_text(size=24,margin=margin(10,0,20,0,"pt")))
+
+CairoFonts("DejaVu Sans:style=Regular","DejaVu Sans:style=Bold","DejaVu Sans:style=Italic","DejaVu Sans:style=Bold Italic","Symbol")
+CairoPNG(filename="todaysForecast.png",width=600,height=480)
 print(g)
+dev.off()
