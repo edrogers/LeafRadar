@@ -1,6 +1,6 @@
 #!/bin/bash
 
-workingDir="/home/ed/Documents/LeafRadar"
+workingDir="/home/${USER}/LeafRadar"
 
 ${workingDir}/moveForecastToWeb.sh
 
