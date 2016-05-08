@@ -2,7 +2,7 @@
 
 nowdate=$(date +%s)
 
-dataDir="/home/ed/Documents/LeafRadar/Leaf"
+dataDir="/home/${USER}/LeafRadar/Leaf"
 
 curl http://www.cityofmadison.com/streets/yardWaste/leaf/LeafWest.cfm -o ${dataDir}/${nowdate}-home.html
 curl http://www.cityofmadison.com/streets/documents/leaf/LEAF_COLLECTION_DISTRICT_2.pdf -o ${dataDir}/${nowdate}-map2.pdf

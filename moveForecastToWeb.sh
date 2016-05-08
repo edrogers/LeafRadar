@@ -1,6 +1,6 @@
 #!/bin/bash
 
-modelDir="/home/ed/Documents/LeafRadar"
+modelDir="/home/${USER}/LeafRadar"
 webDir="/var/www/html"
 
 cp -p ${modelDir}/todaysForecast.png ${webDir}/
