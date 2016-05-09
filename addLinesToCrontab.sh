@@ -1,6 +1,6 @@
 #!/bin/bash
 
-env | grep -v '^LS_COLORS=' > /home/${USER}/.bash_profile
+env | grep -v '^LS_COLORS=' | grep -v '^SSH' > /home/${USER}/.bash_profile
 
 sed -i 's|${USER}|'"${USER}"'|g' /home/${USER}/LeafRadar/addLinesToCrontabSudo.sh
 sed -i 's|${USER}|'"${USER}"'|g' /home/${USER}/LeafRadar/completeUpdate_Sudo.sh
