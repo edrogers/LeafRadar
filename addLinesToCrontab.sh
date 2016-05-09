@@ -2,8 +2,8 @@
 
 env > /home/${USER}/.bash_profile
 
-sed -i 's|${USER}|'"${USER}"'|g' addLinesToCrontabSudo.sh
-sed -i 's|${USER}|'"${USER}"'|g' completeUpdate_Sudo.sh
+sed -i 's|${USER}|'"${USER}"'|g' /home/${USER}/LeafRadar/addLinesToCrontabSudo.sh
+sed -i 's|${USER}|'"${USER}"'|g' /home/${USER}/LeafRadar/completeUpdate_Sudo.sh
 
 crontab -l > crontab_user.txt 2> /dev/null
 
