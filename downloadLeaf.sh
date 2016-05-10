@@ -1,6 +1,4 @@
 #!/bin/bash
-source /home/${USER}/.bash_profile
-
 nowdate=$(date +%s)
 
 dataDir="/home/${USER}/LeafRadar/Leaf"
