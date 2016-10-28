@@ -28,8 +28,10 @@ for mapPDF in mapPDFs :
     timeStamp=timeStampRegEx.match(mapPDF).group()
     districtNum=int(digitsRegEx.search(districtRegEx.search(mapPDF).group()).group())-1
     mapGIF=mapPDF.replace(".pdf",".gif")
-    os.system("convert {}/{} {}/{}".format(dataSourceDir,mapPDF,
-                                           dataSourceDir,mapGIF))
+    fname="{}/{}".format(dataSourceDir,mapGIF)
+    if (not os.path.isfile(fname)):
+        os.system("convert {}/{} {}/{}".format(dataSourceDir,mapPDF,
+                                               dataSourceDir,mapGIF))
     #convert GIF to RGB
     mapIMG=Image.open("{}/{}".format(dataSourceDir,mapGIF))
     mapRGB=mapIMG.convert('RGB')
