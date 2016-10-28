@@ -10,7 +10,7 @@ library(Cairo)
 
 model <- readRDS("model.rds")
 
-leafData <- read.csv("~/Documents/LeafRadar/mapStatuses.csv")
+leafData <- read.csv("~/LeafRadar/mapStatuses.csv")
 leafData <- leafData[,-which(names(leafData) == "District")]
 leafData <- leafData %>% dcast(Time.Stamp ~ Area,value.var="Status")
 leafData$Time.Stamp <- as.POSIXct(leafData$Time.Stamp,
