@@ -10,7 +10,7 @@ library(Cairo)
 
 #Start with Leaf maps
 
-leafData <- read.csv("~/Documents/LeafRadar/mapStatuses.csv")
+leafData <- read.csv("~/LeafRadar/mapStatuses.csv")
 leafData <- leafData[,-which(names(leafData) == "District")]
 leafData <- leafData %>% dcast(Time.Stamp ~ Area,value.var="Status")
 leafData$Time.Stamp <- as.POSIXct(leafData$Time.Stamp,
@@ -137,12 +137,14 @@ for (sideOfTown in c("West","East")) {
   for (targetArea in colnames(leafDataSideOfTown[,-1])) {
     thisAreaModel <- cbind(Area=targetArea,generateLeafModelData(leafDataSideOfTown,targetArea))
     (pred.pred <- predict(modelSideOfTown,interval="prediction",newdata = thisAreaModel))
-    mean <- tail(pred.pred[,"fit"],n=1)
+    mean <- tail(pred.pred[,"fit"],n=1)+1
     sd <- (tail(pred.pred[,"fit"],n=1)-tail(pred.pred[,"lwr"],n=1))/1.96
     
     # Build a list of business days going 60 days in either direction
-    madisonHolidays <- c(holidayNYSE(2015),
+    madisonHolidays <- c(holidayNYSE(2014),
+			 holidayNYSE(2015),
                          holidayNYSE(2016),
+                         holidayNYSE(2017),
                          timeDate("2015-11-27 05:00:00",
                                   format="%Y-%m-%d %H:%M:%S",
                                   FinCenter = "NewYork"),
@@ -200,7 +202,7 @@ for (sideOfTown in c("West","East")) {
 modelEastBrush <- readRDS("modelEastBrush.rds")
 modelWestBrush <- readRDS("modelWestBrush.rds")
 
-leafData <- read.csv("~/Documents/LeafRadar/mapStatusesBrush.csv")
+leafData <- read.csv("~/LeafRadar/mapStatusesBrush.csv")
 leafData <- leafData[,-which(names(leafData) == "District")]
 leafData <- leafData %>% dcast(Time.Stamp ~ Area,value.var="Status")
 leafData$Time.Stamp <- as.POSIXct(leafData$Time.Stamp,
@@ -339,12 +341,14 @@ for (sideOfTown in c("West","East")) {
   for (targetArea in colnames(leafDataSideOfTown[,-1])) {
     thisAreaModel <- cbind(Area=targetArea,generateBrushModelData(leafDataSideOfTown,targetArea))
     (pred.pred <- predict(modelSideOfTown,interval="prediction",newdata = thisAreaModel))
-    mean <- tail(pred.pred[,"fit"],n=1)
+    mean <- tail(pred.pred[,"fit"],n=1)+1
     sd <- (tail(pred.pred[,"fit"],n=1)-tail(pred.pred[,"lwr"],n=1))/1.96
     
     # Build a list of business days going 60 days in either direction
-    madisonHolidays <- c(holidayNYSE(2015),
+    madisonHolidays <- c(holidayNYSE(2014),
+			 holidayNYSE(2015),
                          holidayNYSE(2016),
+                         holidayNYSE(2017),
                          timeDate("2015-11-27 05:00:00",
                                   format="%Y-%m-%d %H:%M:%S",
                                   FinCenter = "NewYork"),
