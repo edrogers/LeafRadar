@@ -10,7 +10,7 @@ library(Cairo)
 
 #Start with Leaf maps
 
-leafData <- read.csv("~/Documents/LeafRadar/mapStatuses.csv")
+leafData <- read.csv("~/LeafRadar/mapStatuses.csv")
 leafData <- leafData[,-which(names(leafData) == "District")]
 leafData <- leafData %>% dcast(Time.Stamp ~ Area,value.var="Status")
 leafData$Time.Stamp <- as.POSIXct(leafData$Time.Stamp,
@@ -228,7 +228,7 @@ for (sideOfTown in c("West","East")) {
 # modelEastBrush <- readRDS("modelEastBrush.rds")
 # modelWestBrush <- readRDS("modelWestBrush.rds")
 # 
-# leafData <- read.csv("~/Documents/LeafRadar/mapStatusesBrush.csv")
+# leafData <- read.csv("~/LeafRadar/mapStatusesBrush.csv")
 # leafData <- leafData[,-which(names(leafData) == "District")]
 # leafData <- leafData %>% dcast(Time.Stamp ~ Area,value.var="Status")
 # leafData$Time.Stamp <- as.POSIXct(leafData$Time.Stamp,
