@@ -137,16 +137,20 @@ for (sideOfTown in c("West","East")) {
   for (targetArea in colnames(leafDataSideOfTown[,-1])) {
     thisAreaModel <- cbind(Area=targetArea,generateLeafModelData(leafDataSideOfTown,targetArea))
     (pred.pred <- predict(modelSideOfTown,interval="prediction",newdata = thisAreaModel))
-    mean <- tail(pred.pred[,"fit"],n=1)
+    mean <- tail(pred.pred[,"fit"],n=1)+1
     sd <- (tail(pred.pred[,"fit"],n=1)-tail(pred.pred[,"lwr"],n=1))/1.96
     
     # Build a list of business days going 60 days in either direction
     madisonHolidays <- c(holidayNYSE(2015),
                          holidayNYSE(2016),
+                         holidayNYSE(2017),
                          timeDate("2015-11-27 05:00:00",
                                   format="%Y-%m-%d %H:%M:%S",
                                   FinCenter = "NewYork"),
                          timeDate("2016-11-25 05:00:00",
+                                  format="%Y-%m-%d %H:%M:%S",
+                                  FinCenter = "NewYork"),
+                         timeDate("2017-11-24 05:00:00",
                                   format="%Y-%m-%d %H:%M:%S",
                                   FinCenter = "NewYork"))
     cal <- Calendar(madisonHolidays,weekdays = c("saturday","sunday"))
@@ -367,16 +371,20 @@ for (sideOfTown in c("West","East")) {
 #   for (targetArea in colnames(leafDataSideOfTown[,-1])) {
 #     thisAreaModel <- cbind(Area=targetArea,generateBrushModelData(leafDataSideOfTown,targetArea))
 #     (pred.pred <- predict(modelSideOfTown,interval="prediction",newdata = thisAreaModel))
-#     mean <- tail(pred.pred[,"fit"],n=1)
+#     mean <- tail(pred.pred[,"fit"],n=1)+1
 #     sd <- (tail(pred.pred[,"fit"],n=1)-tail(pred.pred[,"lwr"],n=1))/1.96
 #     
 #     # Build a list of business days going 60 days in either direction
 #     madisonHolidays <- c(holidayNYSE(2015),
 #                          holidayNYSE(2016),
+#                          holidayNYSE(2017),
 #                          timeDate("2015-11-27 05:00:00",
 #                                   format="%Y-%m-%d %H:%M:%S",
 #                                   FinCenter = "NewYork"),
 #                          timeDate("2016-11-25 05:00:00",
+#                                   format="%Y-%m-%d %H:%M:%S",
+#                                   FinCenter = "NewYork"),
+#                          timeDate("2017-11-24 05:00:00",
 #                                   format="%Y-%m-%d %H:%M:%S",
 #                                   FinCenter = "NewYork"))
 #     cal <- Calendar(madisonHolidays,weekdays = c("saturday","sunday"))
