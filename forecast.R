@@ -176,29 +176,29 @@ for (sideOfTown in c("West","East")) {
     dataForBarChart$prettyBizDays <- factor(dataForBarChart$prettyBizDays,levels=rev(dataForBarChart$prettyBizDays))
     dataForBarChart$prob          <- as.numeric(dataForBarChart$prob)
 
-#     # green bar-chart first    
-#     green <- "#87B287"
-#     g <- ggplot(data=dataForBarChart, aes(x=prettyBizDays, y=prob)) +
-#       geom_bar(fill=green,colour=green,stat="identity")+
-#       scale_y_continuous(labels=percent_format())+
-#       coord_flip()+
-#       xlab("")+ylab("")+ggtitle("Likely Pickup Days")+
-#       theme(axis.text.x = element_text(vjust=0.5, size=12),
-#             axis.ticks.x = element_line(colour = "white", size=0),
-#             axis.ticks.y = element_line(colour = "white", size=0),
-#             axis.text.y = element_text(colour="black",vjust=0.5, hjust=1, size=16, margin=margin(5,-15,10,5,"pt")),
-#             panel.background = element_rect(fill="white"),
-#             panel.grid.major.x = element_line(colour="#D0D0D0",size=.75),
-#             panel.grid.major.y = element_line(colour="white"),
-#             panel.grid.minor   = element_line(colour="white"),
-#             plot.title = element_text(size=24,margin=margin(10,0,20,0,"pt")))
-#     
-#     dir <- substr(targetArea,0,6)
-#     filename <- paste0(substring(targetArea,8),"_leaf.png")
-#     CairoFonts("DejaVu Sans:style=Regular","DejaVu Sans:style=Bold","DejaVu Sans:style=Italic","DejaVu Sans:style=Bold Italic","Symbol")
-#     CairoPNG(filename=paste(dir,filename,sep = "/"),width=600,height=480)
-#     print(g)
-#     dev.off()
+    # green bar-chart first    
+    green <- "#87B287"
+    g <- ggplot(data=dataForBarChart, aes(x=prettyBizDays, y=prob)) +
+      geom_bar(fill=green,colour=green,stat="identity")+
+      scale_y_continuous(labels=percent_format())+
+      coord_flip()+
+      xlab("")+ylab("")+ggtitle("Likely Pickup Days")+
+      theme(axis.text.x = element_text(vjust=0.5, size=12),
+            axis.ticks.x = element_line(colour = "white", size=0),
+            axis.ticks.y = element_line(colour = "white", size=0),
+            axis.text.y = element_text(colour="black",vjust=0.5, hjust=1, size=16, margin=margin(5,-15,10,5,"pt")),
+            panel.background = element_rect(fill="white"),
+            panel.grid.major.x = element_line(colour="#D0D0D0",size=.75),
+            panel.grid.major.y = element_line(colour="white"),
+            panel.grid.minor   = element_line(colour="white"),
+            plot.title = element_text(size=24,margin=margin(10,0,20,0,"pt")))
+    
+    dir <- substr(targetArea,0,6)
+    filename <- paste0(substring(targetArea,8),"_leaf.png")
+    CairoFonts("DejaVu Sans:style=Regular","DejaVu Sans:style=Bold","DejaVu Sans:style=Italic","DejaVu Sans:style=Bold Italic","Symbol")
+    CairoPNG(filename=paste(dir,filename,sep = "/"),width=600,height=480)
+    print(g)
+    dev.off()
     
     # grey-gold bar-chart next
     bkgdColor <- "#808080"
