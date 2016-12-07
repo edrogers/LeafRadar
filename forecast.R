@@ -128,6 +128,7 @@ leafDataWest <- leafData %>%
   select(-starts_with("Area07")) %>%
   select(-starts_with("Area09"))
 for (sideOfTown in c("West","East")) {
+# for (sideOfTown in c("West")) {
   leafDataSideOfTown <- leafDataEast
   modelSideOfTown    <- modelEastLeaf
   if (sideOfTown == "West") {
@@ -135,6 +136,7 @@ for (sideOfTown in c("West","East")) {
     modelSideOfTown    <- modelWestLeaf
   }
   for (targetArea in colnames(leafDataSideOfTown[,-1])) {
+#   for (targetArea in colnames(leafDataSideOfTown[,c("Area10_012","Area10_013")])) {
     thisAreaModel <- cbind(Area=targetArea,generateLeafModelData(leafDataSideOfTown,targetArea))
     (pred.pred <- predict(modelSideOfTown,interval="prediction",newdata = thisAreaModel))
     mean <- tail(pred.pred[,"fit"],n=1)+1
@@ -154,9 +156,11 @@ for (sideOfTown in c("West","East")) {
                                   format="%Y-%m-%d %H:%M:%S",
                                   FinCenter = "NewYork"))
     cal <- Calendar(madisonHolidays,weekdays = c("saturday","sunday"))
-    today <- tail(thisAreaModel$timeStamps,n=1)
-    bizDayList <- bizseq(today-60*24*60*60,today+60*24*60*60,cal)
-    # Which day in this list is the latest day <= today?
+    dayOfMostRecentData <- tail(thisAreaModel$timeStamps,n=1)
+    today <- Sys.time()
+    bizDayList <- bizseq(dayOfMostRecentData-60*24*60*60,dayOfMostRecentData+60*24*60*60,cal)
+    # Which day in this list is the latest day <= dayOfMostRecentData?
+    nDayOfMostRecentData <- tail(which(bizDayList<=as.Date(dayOfMostRecentData)),n=1)
     nToday <- tail(which(bizDayList<=as.Date(today)),n=1)
     bizDayListPretty <- format(bizDayList,"%a, %b %d")
     
@@ -169,7 +173,7 @@ for (sideOfTown in c("West","East")) {
       dataForBarChart[nrow(dataForBarChart)+1,] <- 
         c(paste0(round(mean,2),"+",i),
           pnorm(ceiling(mean)+i,mean=mean,sd=sd)-pnorm(floor(mean)+i,mean=mean,sd=sd),
-          bizDayListPretty[nToday+floor(mean)+i])
+          bizDayListPretty[nDayOfMostRecentData+floor(mean)+i])
     }
     
     dataForBarChart$day           <- factor(dataForBarChart$day,levels=rev(dataForBarChart$day))
@@ -227,6 +231,18 @@ for (sideOfTown in c("West","East")) {
     CairoPNG(filename=paste(dir,filename,sep = "/"),width=300,height=200)
     print(gBarChart)
     dev.off()
+    
+    #Frame for grey-gold bar chart
+    workingDir=getwd()
+    system2(command = paste(workingDir,"/Graphics/drawBoxHist.sh",sep="/"),
+            args = c(substr(targetArea,5,6),
+                     substring(targetArea,8),
+                     floor(mean)-numBarsDivTwo+nDayOfMostRecentData-nToday,
+                     ceiling(mean)+numBarsDivTwo+nDayOfMostRecentData-nToday,
+                     (format(bizDayList,"%a"))[nDayOfMostRecentData+floor(mean)],
+                     (format(bizDayList,"%b"))[nDayOfMostRecentData+floor(mean)],
+                     (format(bizDayList,"%d"))[nDayOfMostRecentData+floor(mean)]),
+            wait = FALSE)
   }
 }
 # modelEastBrush <- readRDS("modelEastBrush.rds")
@@ -388,10 +404,10 @@ for (sideOfTown in c("West","East")) {
 #                                   format="%Y-%m-%d %H:%M:%S",
 #                                   FinCenter = "NewYork"))
 #     cal <- Calendar(madisonHolidays,weekdays = c("saturday","sunday"))
-#     today <- tail(thisAreaModel$timeStamps,n=1)
-#     bizDayList <- bizseq(today-60*24*60*60,today+60*24*60*60,cal)
-#     # Which day in this list is the latest day <= today?
-#     nToday <- tail(which(bizDayList<=as.Date(today)),n=1)
+#     dayOfMostRecentData <- tail(thisAreaModel$timeStamps,n=1)
+#     bizDayList <- bizseq(dayOfMostRecentData-60*24*60*60,dayOfMostRecentData+60*24*60*60,cal)
+#     # Which day in this list is the latest day <= dayOfMostRecentData?
+#     nDayOfMostRecentData <- tail(which(bizDayList<=as.Date(dayOfMostRecentData)),n=1)
 #     bizDayListPretty <- format(bizDayList,"%a, %b %d")
 #     
 #     dataForBarChart <- data.frame(day=character(0),
@@ -403,7 +419,7 @@ for (sideOfTown in c("West","East")) {
 #       dataForBarChart[nrow(dataForBarChart)+1,] <- 
 #         c(paste0(round(mean,2),"+",i),
 #           pnorm(ceiling(mean)+i,mean=mean,sd=sd)-pnorm(floor(mean)+i,mean=mean,sd=sd),
-#           bizDayListPretty[nToday+floor(mean)+i])
+#           bizDayListPretty[nDayOfMostRecentData+floor(mean)+i])
 #     }
 #     
 #     dataForBarChart$day           <- factor(dataForBarChart$day,levels=rev(dataForBarChart$day))
