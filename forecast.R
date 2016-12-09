@@ -234,7 +234,7 @@ for (sideOfTown in c("West","East")) {
     
     #Frame for grey-gold bar chart
     workingDir=getwd()
-    system2(command = paste(workingDir,"/Graphics/drawBoxHist.sh",sep="/"),
+    system2(command = paste(workingDir,"Graphics/drawBoxHist.sh",sep="/"),
             args = c(substr(targetArea,5,6),
                      substring(targetArea,8),
                      floor(mean)-numBarsDivTwo+nDayOfMostRecentData-nToday,
@@ -243,6 +243,16 @@ for (sideOfTown in c("West","East")) {
                      (format(bizDayList,"%b"))[nDayOfMostRecentData+floor(mean)],
                      (format(bizDayList,"%d"))[nDayOfMostRecentData+floor(mean)]),
             wait = FALSE)
+
+    #Frame for maps chart
+    system2(command = paste(workingDir,"Graphics/drawBoxMaps.sh",sep="/"),
+            args = c(substr(targetArea,5,6),
+                     substring(targetArea,8),
+                     gsub("Recently Done","Recently_Done",
+                          tail(thisAreaModel$status,1)),
+                     as.numeric(dayOfMostRecentData)),
+            wait = FALSE)
+    
   }
 }
 # modelEastBrush <- readRDS("modelEastBrush.rds")
