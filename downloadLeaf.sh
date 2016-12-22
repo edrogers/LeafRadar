@@ -19,14 +19,4 @@ curl http://www.cityofmadison.com/streets/documents/leaf/LEAF_COLLECTION_DISTRIC
 
 sleep 60
 
-#Keep only the 10 latest reads
-let iTimeStamp=0;
-for file in $(ls -1r ${dataDir}/*map10.pdf); do
-    let iTimeStamp+=1;
-    let timeStamp=$(echo $(basename ${file}) | grep -o '^[[:digit:]]\{1,\}'); 
-    if [ ${iTimeStamp} -gt 10 ]; then
-	rm ${dataDir}/${timeStamp}-*
-    fi
-done
-
 exit
