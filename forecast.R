@@ -29,6 +29,8 @@ leafData$Time.Stamp <- as.POSIXct(leafData$Time.Stamp,
 leafData[is.na(leafData)] <- "NA"
 leafData <- leafData[c(TRUE,rowMeans(tail(leafData[,-1],-1) != head(leafData[,-1],-1))>0),]
 
+leafDataRaw <- leafData
+
 timeStamp <- leafData$Time.Stamp
 leafData <- leafData[,-1]
 
@@ -49,6 +51,41 @@ leafData[currentStreakLength>3] <- "Done"
 firstTwoEntriesAfterCurrent <- (rbind("Done",head(leafData,-1))=="Current" | rbind("Done","Done",head(leafData,-2))=="Current") & leafData!="Current"
 leafData[firstTwoEntriesAfterCurrent] <- "Recently Done"
 leafData <- cbind(Time.Stamp = timeStamp, leafData)
+
+summarizeDistrictData <- function(districtData) {
+  districtStatus <- "done"  
+  if(sum(districtData=="Current")>0) {
+    districtStatus <- "current"
+  } else if (sum(districtData=="Next")>0) {
+    districtStatus <- "next"
+  } else if (sum(districtData=="Not Done")>0) {
+    districtStatus <- "notdone"
+  }
+  districtStatus
+}
+summarizeEachDistrict <- function(leafDataSideOfTownRaw) {
+
+  # Select only the columns for Area Statuses
+  leafDataStatuses <- leafDataSideOfTownRaw %>%
+    select(matches("Area[0-9]+_[0-9]+$"))
+  
+  # Grab the time stamp column
+  timeStamp      <- leafDataSideOfTownRaw[,"Time.Stamp"]
+  
+  latestTimeStamp <- tail(timeStamp,n=1)
+  leafDataMonStatuses <- tail(leafDataStatuses %>% select(matches("Area0[1,2]_[0-9]+$")),n=1)
+  leafDataTueStatuses <- tail(leafDataStatuses %>% select(matches("Area0[3,4]_[0-9]+$")),n=1)
+  leafDataWedStatuses <- tail(leafDataStatuses %>% select(matches("Area0[5,6]_[0-9]+$")),n=1)
+  leafDataThuStatuses <- tail(leafDataStatuses %>% select(matches("Area0[7,8]_[0-9]+$")),n=1)
+  leafDataFriStatuses <- tail(leafDataStatuses %>% select(matches("Area[0,1][9,0]_[0-9]+$")),n=1)
+  
+  leafDataSummary <- cbind(summarizeDistrictData(leafDataMonStatuses),
+                           summarizeDistrictData(leafDataTueStatuses),
+                           summarizeDistrictData(leafDataWedStatuses),
+                           summarizeDistrictData(leafDataThuStatuses),
+                           summarizeDistrictData(leafDataFriStatuses))
+  leafDataSummary
+}
 
 generateLeafModelData <- function(leafDataSideOfTown,targetArea) {
   
@@ -118,6 +155,12 @@ leafDataEast <- leafData %>%
   select(-starts_with("Area06")) %>%
   select(-starts_with("Area08")) %>%
   select(-starts_with("Area10"))
+leafDataEastRaw <- leafDataRaw %>%
+  select(-starts_with("Area02")) %>%
+  select(-starts_with("Area04")) %>%
+  select(-starts_with("Area06")) %>%
+  select(-starts_with("Area08")) %>%
+  select(-starts_with("Area10"))
 
 #West
 modelWestLeaf  <- readRDS("modelWestLeaf.rds")
@@ -127,13 +170,21 @@ leafDataWest <- leafData %>%
   select(-starts_with("Area05")) %>%
   select(-starts_with("Area07")) %>%
   select(-starts_with("Area09"))
+leafDataWestRaw <- leafDataRaw %>%
+  select(-starts_with("Area01")) %>%
+  select(-starts_with("Area03")) %>%
+  select(-starts_with("Area05")) %>%
+  select(-starts_with("Area07")) %>%
+  select(-starts_with("Area09"))
 for (sideOfTown in c("West","East")) {
 # for (sideOfTown in c("West")) {
   leafDataSideOfTown <- leafDataEast
   modelSideOfTown    <- modelEastLeaf
+  leafDataSummary    <- summarizeEachDistrict(leafDataEastRaw)
   if (sideOfTown == "West") {
     leafDataSideOfTown <- leafDataWest
     modelSideOfTown    <- modelWestLeaf
+    leafDataSummary    <- summarizeEachDistrict(leafDataWestRaw)    
   }
   for (targetArea in colnames(leafDataSideOfTown[,-1])) {
 #   for (targetArea in colnames(leafDataSideOfTown[,c("Area10_012","Area10_013")])) {
@@ -251,6 +302,13 @@ for (sideOfTown in c("West","East")) {
                      gsub("Recently Done","Recently_Done",
                           tail(thisAreaModel$status,1)),
                      as.numeric(dayOfMostRecentData)),
+            wait = FALSE)
+    
+    #Frame for dial chart
+    system2(command = paste(workingDir,"Graphics/drawBoxDial.sh",sep="/"),
+            args = c(substr(targetArea,5,6),
+                     substring(targetArea,8),
+                     leafDataSummary[1:5]),
             wait = FALSE)
     
   }
