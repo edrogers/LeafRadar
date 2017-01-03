@@ -141,7 +141,7 @@ generateLeafModelData <- function(leafDataSideOfTown,targetArea) {
   modelData$status <- factor(leafDataStatuses[,targetArea],levels=c("Done","Current","Next","Recently Done","Not Done"))
   modelData$nCurrent <- rowSums(leafDataStatuses=="Current")
   modelData$timeStamps <- timeStamp
-  modelData$weekOfYear <- format(as.Date(modelData$timeStamps,format="%d-%m-%Y"),"%W")
+  modelData$weekOfYear <- factor(format(as.Date(modelData$timeStamps,format="%d-%m-%Y"),"%W"),levels=c(1:53))
   modelData$month <- format(as.Date(modelData$timeStamps,format="%d-%m-%Y"),"%m")
   
   modelData
