@@ -149,6 +149,7 @@ generateLeafModelData <- function(leafDataSideOfTown,targetArea) {
 
 #East
 modelEastLeaf  <- readRDS("modelEastLeaf.rds")
+modelEastLeaf$xlevels[["weekOfYear"]] <- c(1:53)
 leafDataEast <- leafData %>%
   select(-starts_with("Area02")) %>%
   select(-starts_with("Area04")) %>%
@@ -164,6 +165,7 @@ leafDataEastRaw <- leafDataRaw %>%
 
 #West
 modelWestLeaf  <- readRDS("modelWestLeaf.rds")
+modelWestLeaf$xlevels[["weekOfYear"]] <- c(1:53)
 leafDataWest <- leafData %>%
   select(-starts_with("Area01")) %>%
   select(-starts_with("Area03")) %>%
