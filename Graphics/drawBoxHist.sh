@@ -12,7 +12,7 @@ baseDir="${HOME}/LeafRadar"
 imagesDir="${baseDir}/Graphics"
 fontFileRegular="${imagesDir}/JosefinSans-Regular.ttf"
 fontFileBold="${imagesDir}/JosefinSans-Bold.ttf"
-blankBoxFile="${imagesDir}/shadowbox.png"
+blankBoxFile="${imagesDir}/emptybox.png"
 outputHistFile="${baseDir}/Area${area}/${district}_box_hist.png"
 
 bizDaysText=""

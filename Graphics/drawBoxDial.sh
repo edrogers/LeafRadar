@@ -14,7 +14,7 @@ dialPiecesDir="${imagesDir}/Dial"
 areaDir="${baseDir}/Area${area}"
 fontFileRegular="${imagesDir}/JosefinSans-Regular.ttf"
 fontFileBold="${imagesDir}/JosefinSans-Bold.ttf"
-blankBoxFile="${imagesDir}/shadowbox.png"
+blankBoxFile="${imagesDir}/emptybox.png"
 mapLegendFile="'"${imagesDir}"/mapLegend.gif'"
 outputHistFile="${areaDir}/${district}_box_dial.png"
 
