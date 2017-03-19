@@ -6,5 +6,6 @@ ${workingDir}/downloadBrush.sh
 ${workingDir}/generateCSV.py
 ${workingDir}/generateCSV_Brush.py
 ${workingDir}/generateForecast.sh
+${workingDir}/Graphics/drawBoxTemp.sh
 
 exit
