@@ -40,6 +40,23 @@ mapsSize=$(identify ${mapsSourceImg} | grep -o '[[:digit:]]\{1,\}x[[:digit:]]\{1
 mapsSizeX=$(echo ${mapsSize} | grep -o '^[[:digit:]]\{1,\}');
 mapsSizeY=$(echo ${mapsSize} | grep -o '[[:digit:]]\{1,\}$');
 
+# Some piece-meal corrections for when the district is right at the edge of the map
+if [[ ${areaStrip} -eq 1 ]] && [[ ${districtStrip} -eq 2 ]]; then
+    let mapsCenterY+=45
+elif [[ ${areaStrip} -eq 1 ]] && [[ ${districtStrip} -eq 3 ]]; then
+    let mapsCenterY+=31
+elif [[ ${areaStrip} -eq 6 ]] && [[ ${districtStrip} -eq 25 ]]; then
+    let mapsCenterY+=32
+elif [[ ${areaStrip} -eq 7 ]] && [[ ${districtStrip} -eq 14 ]]; then
+    let mapsCenterY+=38
+elif [[ ${areaStrip} -eq 7 ]] && [[ ${districtStrip} -eq 15 ]]; then
+    let mapsCenterY+=42
+elif [[ ${areaStrip} -eq 8 ]] && [[ ${districtStrip} -eq 15 ]]; then
+    let mapsCenterX+=55 # Note: this shift is in X
+elif [[ ${areaStrip} -eq 10 ]] && [[ ${districtStrip} -eq 15 ]]; then
+    let mapsCenterY+=43
+fi
+
 mapsMinX=$(echo "${mapsCenterX}-${mapCropX}/2" | bc )
 mapsMinY=$(echo "${mapsCenterY}-${mapCropY}/2" | bc )
 mapsMaxX=$(echo "${mapsCenterX}+${mapCropX}/2" | bc )
