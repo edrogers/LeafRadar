@@ -27,7 +27,7 @@ done
 function getConditionCode {
     # Today is 0, tomorrow is 1, etc.
     day=$1
-    let nrCode=$day+1
+    let nrCode=$day+2 # Bug fix: off-by-one error for "code" value due to it showing up in yweather:condition block
     echo $(grep "yweather:forecast" ${baseDir}/weather.xml | grep -o "code=\"[^\"]*\"" | grep -o "\"[^\"]*\"" | grep -o "[^\"]*" | awk "NR==${nrCode}")
 }
 function getConditionLow {
