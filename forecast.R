@@ -16,7 +16,7 @@ leafData <- leafData %>% dcast(Time.Stamp ~ Area,value.var="Status")
 leafData$Time.Stamp <- as.POSIXct(leafData$Time.Stamp,
                                   origin = "1970-01-01",
                                   tz="America/Chicago")
-
+mostRecentData <- tail(leafData,1)
 # Remove consecutive duplicate entries (ignoring differences in timestamp)
 #  Done by using a slick hack with rowMeans and booleans. Essentially,
 #  the first row is demanded with c(TRUE,...), and all other rows are 
@@ -301,9 +301,8 @@ for (sideOfTown in c("West","East")) {
     system2(command = paste(workingDir,"Graphics/drawBoxMaps.sh",sep="/"),
             args = c(substr(targetArea,5,6),
                      substring(targetArea,8),
-                     gsub("Recently Done","Recently_Done",
-                          tail(thisAreaModel$status,1)),
-                     as.numeric(dayOfMostRecentData)),
+                     mostRecentData[targetArea],
+                     as.numeric(mostRecentData["Time.Stamp"])),
             wait = FALSE)
     
     #Frame for dial chart
