@@ -1,0 +1,31 @@
+# exclude everything
+Leaf/*
+Brush/*
+Area01/*
+Area02/*
+Area03/*
+Area04/*
+Area05/*
+Area06/*
+Area07/*
+Area08/*
+Area09/*
+Area10/*
+Graphics/Josefin*
+Graphics/OFL.txt
+*.pyc
+.Rhistory
+
+# exception to the rule
+!Leaf/.gitkeep
+!Brush/.gitkeep
+!Area01/.gitkeep
+!Area02/.gitkeep
+!Area03/.gitkeep
+!Area04/.gitkeep
+!Area05/.gitkeep
+!Area06/.gitkeep
+!Area07/.gitkeep
+!Area08/.gitkeep
+!Area09/.gitkeep
+!Area10/.gitkeep

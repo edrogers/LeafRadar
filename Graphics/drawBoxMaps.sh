@@ -22,15 +22,23 @@ areaStrip=$(echo ${area} | bc -l);
 districtStrip=$(echo ${district} | bc -l);
 areaText="'Area "${areaStrip}"-"${districtStrip}"'"
 
-if [ ".${status}" == ".Recently_Done" ]; then
-    status="Done"
+if [ ".${status}" == ".Done" ]; then
+    status="Round Complete"
+elif [ ".${status}" == ".Not_Done" ]; then
+    status="Season Over"
 fi
+
 statusText="'Status: "${status}"'"
 
 asOfDateText=$(date -d @${asOfEpoch} +"%A %-m/%-d")
 asOfText="'As of "${asOfDateText}"'"
 
-mapsCoordFile="${baseDir}/madisonStreetsSubdivisions.py"
+if [ ${asOfEpoch} -lt 1491004800 ];
+then
+    mapsCoordFile="${baseDir}/madisonStreetsSubdivisions.py"
+else
+    mapsCoordFile="${baseDir}/madisonStreetsSubdivisions_v2.py"
+fi
 mapsSourceImg="${mapsDir}/${asOfEpoch}-map${areaStrip}.gif"
 mapsCropImg="${areaDir}/${district}_crop_maps.png"
 mapsCenter=$(grep "^Area${areaStrip}_${districtStrip}=" ${mapsCoordFile} | grep -o "\[[[:digit:]]\{1,\},[[:digit:]]\{1,\}\]");
@@ -95,9 +103,15 @@ mapsCropImg="'"${mapsCropImg}"'"
 # echo "mapsMaxX    == ${mapsMaxX}"
 # echo "mapsMaxY    == ${mapsMaxY}"
 
-convert -pointsize 60 -fill black -font ${fontFileRegular} -gravity North -draw "text 0,30 ${areaText}" \
-        -pointsize 42             -font ${fontFileBold}    -gravity South -draw "text 0,55 ${statusText}" \
-        -pointsize 36             -font ${fontFileRegular}                -draw "text 0,18 ${asOfText}" \
+statusPointSize=42
+if [ ".${status}" == ".Round Complete" ];
+then
+    statusPointSize=36
+fi
+
+convert -pointsize 60 -fill black     -font ${fontFileRegular} -gravity North -draw "text 0,30 ${areaText}" \
+        -pointsize ${statusPointSize} -font ${fontFileBold}    -gravity South -draw "text 0,55 ${statusText}" \
+        -pointsize 36                 -font ${fontFileRegular}                -draw "text 0,18 ${asOfText}" \
                                                           -gravity center -draw "image over 50,-10 0,0 ${mapsCropImg}" \
                                                           -gravity center -draw "image over -115,-10 0,0 ${mapLegendFile}" \
    ${blankBoxFile} ${outputHistFile};

@@ -162,6 +162,12 @@ leafDataEastRaw <- leafDataRaw %>%
   select(-starts_with("Area06")) %>%
   select(-starts_with("Area08")) %>%
   select(-starts_with("Area10"))
+mostRecentDataEast <- mostRecentData %>%
+  select(-starts_with("Area02")) %>%
+  select(-starts_with("Area04")) %>%
+  select(-starts_with("Area06")) %>%
+  select(-starts_with("Area08")) %>%
+  select(-starts_with("Area10"))
 
 #West
 modelWestLeaf  <- readRDS("modelWestLeaf.rds")
@@ -178,15 +184,22 @@ leafDataWestRaw <- leafDataRaw %>%
   select(-starts_with("Area05")) %>%
   select(-starts_with("Area07")) %>%
   select(-starts_with("Area09"))
+mostRecentDataWest <- mostRecentData %>%
+  select(-starts_with("Area01")) %>%
+  select(-starts_with("Area03")) %>%
+  select(-starts_with("Area05")) %>%
+  select(-starts_with("Area07")) %>%
+  select(-starts_with("Area09"))
+
 for (sideOfTown in c("West","East")) {
 # for (sideOfTown in c("West")) {
   leafDataSideOfTown <- leafDataEast
   modelSideOfTown    <- modelEastLeaf
-  leafDataSummary    <- summarizeEachDistrict(leafDataEastRaw)
+  leafDataSummary    <- summarizeEachDistrict(mostRecentDataEast)
   if (sideOfTown == "West") {
     leafDataSideOfTown <- leafDataWest
     modelSideOfTown    <- modelWestLeaf
-    leafDataSummary    <- summarizeEachDistrict(leafDataWestRaw)    
+    leafDataSummary    <- summarizeEachDistrict(mostRecentDataWest)
   }
   for (targetArea in colnames(leafDataSideOfTown[,-1])) {
 #   for (targetArea in colnames(leafDataSideOfTown[,c("Area10_012","Area10_013")])) {
@@ -298,14 +311,21 @@ for (sideOfTown in c("West","East")) {
             wait = FALSE)
 
     #Frame for maps chart
+#     print(c(substr(targetArea,5,6),
+#             substring(targetArea,8),
+#             gsub(" ", "_", mostRecentData[targetArea]),
+#             as.numeric(mostRecentData["Time.Stamp"])))
     system2(command = paste(workingDir,"Graphics/drawBoxMaps.sh",sep="/"),
             args = c(substr(targetArea,5,6),
                      substring(targetArea,8),
-                     mostRecentData[targetArea],
+                     gsub(" ", "_", mostRecentData[targetArea]),
                      as.numeric(mostRecentData["Time.Stamp"])),
             wait = FALSE)
     
     #Frame for dial chart
+#    print(c(substr(targetArea,5,6),
+#            substring(targetArea,8),
+#            leafDataSummary[1:5]))
     system2(command = paste(workingDir,"Graphics/drawBoxDial.sh",sep="/"),
             args = c(substr(targetArea,5,6),
                      substring(targetArea,8),

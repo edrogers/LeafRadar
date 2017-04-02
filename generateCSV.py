@@ -4,7 +4,8 @@ from PIL import Image
 import os
 import re
 import math
-from madisonStreetsSubdivisions import AllDistricts,AllDistrictsNames,NotDoneStatuses,DoneStatuses,CurrentStatuses,NextStatuses
+import madisonStreetsSubdivisions
+import madisonStreetsSubdivisions_v2
 
 dirName=os.path.dirname(os.path.realpath(__file__))
 dataSourceDir="{}/Leaf".format(dirName)
@@ -26,6 +27,21 @@ for filename in dataSourceDirContents:
 mapPDFs.sort()
 for mapPDF in mapPDFs :
     timeStamp=timeStampRegEx.match(mapPDF).group()
+    if timeStamp < 1491004800:
+        AllDistricts      = madisonStreetsSubdivisions.AllDistricts
+        AllDistrictsNames = madisonStreetsSubdivisions.AllDistrictsNames
+        NotDoneStatuses   = madisonStreetsSubdivisions.NotDoneStatuses
+        DoneStatuses      = madisonStreetsSubdivisions.DoneStatuses
+        CurrentStatuses   = madisonStreetsSubdivisions.CurrentStatuses
+        NextStatuses      = madisonStreetsSubdivisions.NextStatuses
+    else:
+        AllDistricts      = madisonStreetsSubdivisions_v2.AllDistricts
+        AllDistrictsNames = madisonStreetsSubdivisions_v2.AllDistrictsNames
+        NotDoneStatuses   = madisonStreetsSubdivisions_v2.NotDoneStatuses
+        DoneStatuses      = madisonStreetsSubdivisions_v2.DoneStatuses
+        CurrentStatuses   = madisonStreetsSubdivisions_v2.CurrentStatuses
+        NextStatuses      = madisonStreetsSubdivisions_v2.NextStatuses
+
     districtNum=int(digitsRegEx.search(districtRegEx.search(mapPDF).group()).group())-1
     mapGIF=mapPDF.replace(".pdf",".gif")
     fname="{}/{}".format(dataSourceDir,mapGIF)

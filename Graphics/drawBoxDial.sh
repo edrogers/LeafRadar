@@ -15,7 +15,6 @@ areaDir="${baseDir}/Area${area}"
 fontFileRegular="${imagesDir}/JosefinSans-Regular.ttf"
 fontFileBold="${imagesDir}/JosefinSans-Bold.ttf"
 blankBoxFile="${imagesDir}/emptybox.png"
-mapLegendFile="'"${imagesDir}"/mapLegend.gif'"
 outputHistFile="${areaDir}/${district}_box_dial.png"
 
 let area=$(echo ${area} | sed -e 's|^0||')
@@ -60,9 +59,9 @@ if [ $area -gt 8 ]; then
     elif [ ".${statusFri}" == ".next" ]; then
 	status="Next";
     elif [ ".${statusFri}" == ".done" ]; then
-	status="Done";
+	status="Round Complete";
     elif [ ".${statusFri}" == ".notdone" ]; then
-	status="Not Done";
+	status="Season Over";
     fi
 elif [ $area -gt 6 ]; then
     dayOfWeek="Thursday"
@@ -74,9 +73,9 @@ elif [ $area -gt 6 ]; then
     elif [ ".${statusThu}" == ".next" ]; then
 	status="Next";
     elif [ ".${statusThu}" == ".done" ]; then
-	status="Done";
+	status="Round Complete";
     elif [ ".${statusThu}" == ".notdone" ]; then
-	status="Not Done";
+	status="Season Over";
     fi
 elif [ $area -gt 4 ]; then
     dayOfWeek="Wednesday"
@@ -88,9 +87,9 @@ elif [ $area -gt 4 ]; then
     elif [ ".${statusWed}" == ".next" ]; then
 	status="Next";
     elif [ ".${statusWed}" == ".done" ]; then
-	status="Done";
+	status="Round Complete";
     elif [ ".${statusWed}" == ".notdone" ]; then
-	status="Not Done";
+	status="Season Over";
     fi
 elif [ $area -gt 2 ]; then
     dayOfWeek="Tuesday"
@@ -102,9 +101,9 @@ elif [ $area -gt 2 ]; then
     elif [ ".${statusTue}" == ".next" ]; then
 	status="Next";
     elif [ ".${statusTue}" == ".done" ]; then
-	status="Done";
+	status="Round Complete";
     elif [ ".${statusTue}" == ".notdone" ]; then
-	status="Not Done";
+	status="Season Over";
     fi
 else
     dayOfWeek="Monday"
@@ -116,9 +115,9 @@ else
     elif [ ".${statusMon}" == ".next" ]; then
 	status="Next";
     elif [ ".${statusMon}" == ".done" ]; then
-	status="Done";
+	status="Round Complete";
     elif [ ".${statusMon}" == ".notdone" ]; then
-	status="Not Done";
+	status="Season Over";
     fi
 fi
 
@@ -127,76 +126,6 @@ statusTueFile=${statusTueFile}".png'";
 statusWedFile=${statusWedFile}".png'";
 statusThuFile=${statusThuFile}".png'";
 statusFriFile=${statusFriFile}".png'";
-
-# mapCropX=200;
-# mapCropY=200;
-
-# areaStrip=$(echo ${area} | bc -l);
-# districtStrip=$(echo ${district} | bc -l);
-# areaText="'Area "${areaStrip}"-"${districtStrip}"'"
-
-# if [ ".${status}" == ".Recently_Done" ]; then
-#     status="Done"
-# fi
-# statusText="'Status: "${status}"'"
-
-# asOfDateText=$(date -d @${asOfEpoch} +"%A %-m/%-d")
-# asOfText="'As of "${asOfDateText}"'"
-
-# mapsCoordFile="${baseDir}/madisonStreetsSubdivisions.py"
-# mapsSourceImg="${mapsDir}/${asOfEpoch}-map${areaStrip}.gif"
-# mapsCropImg="${areaDir}/${district}_crop_maps.png"
-# mapsCenter=$(grep "^Area${areaStrip}_${districtStrip}=" ${mapsCoordFile} | grep -o "\[[[:digit:]]\{1,\},[[:digit:]]\{1,\}\]");
-# mapsCenterX=$(echo ${mapsCenter} | grep -o '\[[[:digit:]]\{1,\},' | grep -o '[[:digit:]]\{1,\}');
-# mapsCenterY=$(echo ${mapsCenter} | grep -o ',[[:digit:]]\{1,\}\]' | grep -o '[[:digit:]]\{1,\}');
-# mapsSize=$(identify ${mapsSourceImg} | grep -o '[[:digit:]]\{1,\}x[[:digit:]]\{1,\}' | head -1);
-# mapsSizeX=$(echo ${mapsSize} | grep -o '^[[:digit:]]\{1,\}');
-# mapsSizeY=$(echo ${mapsSize} | grep -o '[[:digit:]]\{1,\}$');
-
-# mapsMinX=$(echo "${mapsCenterX}-${mapCropX}/2" | bc )
-# mapsMinY=$(echo "${mapsCenterY}-${mapCropY}/2" | bc )
-# mapsMaxX=$(echo "${mapsCenterX}+${mapCropX}/2" | bc )
-# mapsMaxY=$(echo "${mapsCenterY}+${mapCropY}/2" | bc )
-# if [ ${mapsMinX} -lt 0 ]; then
-#     let mapsMaxX=${mapsMaxX}-${mapsMinX};
-#     let mapsMinX=0;
-# fi
-# if [ ${mapsMinY} -lt 0 ]; then
-#     let mapsMaxY=${mapsMaxY}-${mapsMinY};
-#     let mapsMinY=0;
-# fi
-# if [ ${mapsMaxX} -gt ${mapsSizeX} ]; then
-#     let mapsMinX=${mapsMinX}+${mapsSizeX}-${mapsMaxX};
-#     let mapsMaxX=${mapsSizeX};
-# fi
-# if [ ${mapsMaxY} -gt ${mapsSizeY} ]; then
-#     let mapsMinY=${mapsMinY}+${mapsSizeY}-${mapsMaxY};
-#     let mapsMaxY=${mapsSizeY};
-# fi
-
-# convert ${mapsSourceImg} -crop ${mapCropX}x${mapCropY}+${mapsMinX}+${mapsMinY} ${mapsCropImg}
-# mapsCropImg="'"${mapsCropImg}"'"
-
-# echo "${areaText}"
-# echo "${statusText}"
-# echo "${asOfText}"
-# echo "mapsCenter  == ${mapsCenter}"
-# echo "mapsCenterX == ${mapsCenterX}"
-# echo "mapsCenterY == ${mapsCenterY}"
-# echo "mapsSize    == ${mapsSize}"
-# echo "mapsSizeX   == ${mapsSizeX}"
-# echo "mapsSizeY   == ${mapsSizeY}"
-# echo "mapsMinX    == ${mapsMinX}"
-# echo "mapsMinY    == ${mapsMinY}"
-# echo "mapsMaxX    == ${mapsMaxX}"
-# echo "mapsMaxY    == ${mapsMaxY}"
-
-# convert -pointsize 60 -fill black -font ${fontFileRegular} -gravity North -draw "text 0,30 ${areaText}" \
-#         -pointsize 42             -font ${fontFileBold}    -gravity South -draw "text 0,55 ${statusText}" \
-#         -pointsize 36             -font ${fontFileRegular}                -draw "text 0,18 ${asOfText}" \
-#                                                           -gravity center -draw "image over 50,-10 0,0 ${mapsCropImg}" \
-#                                                           -gravity center -draw "image over -115,-10 0,0 ${mapLegendFile}" \
-#    ${blankBoxFile} ${outputHistFile};
 
 HeaderText1="'${sideOfTown} Side, ${dayOfWeek} Collection'"
 HeaderText2="'Status: ${status}'"
@@ -213,14 +142,14 @@ convert -gravity center -draw "image over 0,20 0,0 ${statusMonFile}" \
         -gravity center -pointsize 18 -fill ${colorFri} -font ${fontFri} -draw "text -29, -20 'Fri'" \
         -gravity north  -pointsize 24 -fill black       -font ${fontFileRegular} -draw "text 0, 24 ${HeaderText1}" \
         -gravity north  -pointsize 30 -fill black       -font ${fontFileBold}    -draw "text 0, 60 ${HeaderText2}" \
-        -gravity south  -draw "image over -100,50 0,0 ${legendCurrentFile}" \
-        -gravity south  -draw "image over -100,20 0,0 ${legendNextFile}" \
-        -gravity south  -draw "image over  20,50 0,0  ${legendDoneFile}" \
-        -gravity south  -draw "image over  20,20 0,0  ${legendNotDoneFile}" \
-        -gravity south  -pointsize 18 -fill black       -font ${fontFileRegular} -draw "text -50,48 'Current'" \
-        -gravity south  -pointsize 18 -fill black       -font ${fontFileRegular} -draw "text -59,18 'Next'" \
-        -gravity south  -pointsize 18 -fill black       -font ${fontFileRegular} -draw "text 65,48 'Done'" \
-        -gravity south  -pointsize 18 -fill black       -font ${fontFileRegular} -draw "text 82,18 'Not Done'" \
+        -gravity south  -draw "image over -110,50 0,0 ${legendCurrentFile}" \
+        -gravity south  -draw "image over -110,20 0,0 ${legendNextFile}" \
+        -gravity south  -draw "image over  10,50  0,0 ${legendDoneFile}" \
+        -gravity south  -draw "image over  10,20  0,0 ${legendNotDoneFile}" \
+        -gravity south  -pointsize 18 -fill black       -font ${fontFileRegular} -draw "text -60,48 'Current'" \
+        -gravity south  -pointsize 18 -fill black       -font ${fontFileRegular} -draw "text -69,18 'Next'" \
+        -gravity south  -pointsize 18 -fill black       -font ${fontFileRegular} -draw "text 93,48 'Round Complete'" \
+        -gravity south  -pointsize 18 -fill black       -font ${fontFileRegular} -draw "text 80,18 'Season Over'" \
    ${blankBoxFile} ${outputHistFile};
 
 
