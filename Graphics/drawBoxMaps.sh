@@ -30,7 +30,7 @@ fi
 
 statusText="'Status: "${status}"'"
 
-asOfDateText=$(date -d @${asOfEpoch} +"%A %-m/%-d")
+asOfDateText=$(TZ='America/Chicago' date -d @${asOfEpoch} +"%A %-m/%-d")
 asOfText="'As of "${asOfDateText}"'"
 
 if [ ${asOfEpoch} -lt 1491004800 ];
