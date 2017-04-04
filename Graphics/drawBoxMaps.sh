@@ -36,8 +36,11 @@ asOfText="'As of "${asOfDateText}"'"
 if [ ${asOfEpoch} -lt 1491004800 ];
 then
     mapsCoordFile="${baseDir}/madisonStreetsSubdivisions.py"
-else
+elif [ ${asOfEpoch} -lt 1491242400 ];
+then
     mapsCoordFile="${baseDir}/madisonStreetsSubdivisions_v2.py"
+else
+    mapsCoordFile="${baseDir}/madisonStreetsSubdivisions_v3.py"
 fi
 mapsSourceImg="${mapsDir}/${asOfEpoch}-map${areaStrip}.gif"
 mapsCropImg="${areaDir}/${district}_crop_maps.png"
