@@ -17,6 +17,4 @@ curl http://www.cityofmadison.com/streets/documents/brush/BRUSH_COLLECTION_DISTR
 curl http://www.cityofmadison.com/streets/documents/brush/BRUSH_COLLECTION_DISTRICT_7.pdf -o ${dataDir}/${nowdate}-map7.pdf
 curl http://www.cityofmadison.com/streets/documents/brush/BRUSH_COLLECTION_DISTRICT_9.pdf -o ${dataDir}/${nowdate}-map9.pdf
 
-sleep 60
-
 exit
