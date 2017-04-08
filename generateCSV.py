@@ -7,6 +7,7 @@ import math
 import madisonStreetsSubdivisions
 import madisonStreetsSubdivisions_v2
 import madisonStreetsSubdivisions_v3
+import madisonStreetsSubdivisions_v4
 
 dirName=os.path.dirname(os.path.realpath(__file__))
 dataSourceDir="{}/Leaf".format(dirName)
@@ -42,13 +43,20 @@ for mapPDF in mapPDFs :
         DoneStatuses      = madisonStreetsSubdivisions_v2.DoneStatuses
         CurrentStatuses   = madisonStreetsSubdivisions_v2.CurrentStatuses
         NextStatuses      = madisonStreetsSubdivisions_v2.NextStatuses
-    else:
+    elif int(timeStamp) < 1491602400:
         AllDistricts      = madisonStreetsSubdivisions_v3.AllDistricts
         AllDistrictsNames = madisonStreetsSubdivisions_v3.AllDistrictsNames
         NotDoneStatuses   = madisonStreetsSubdivisions_v3.NotDoneStatuses
         DoneStatuses      = madisonStreetsSubdivisions_v3.DoneStatuses
         CurrentStatuses   = madisonStreetsSubdivisions_v3.CurrentStatuses
         NextStatuses      = madisonStreetsSubdivisions_v3.NextStatuses
+    else:
+        AllDistricts      = madisonStreetsSubdivisions_v4.AllDistricts
+        AllDistrictsNames = madisonStreetsSubdivisions_v4.AllDistrictsNames
+        NotDoneStatuses   = madisonStreetsSubdivisions_v4.NotDoneStatuses
+        DoneStatuses      = madisonStreetsSubdivisions_v4.DoneStatuses
+        CurrentStatuses   = madisonStreetsSubdivisions_v4.CurrentStatuses
+        NextStatuses      = madisonStreetsSubdivisions_v4.NextStatuses
 
 
     districtNum=int(digitsRegEx.search(districtRegEx.search(mapPDF).group()).group())-1
