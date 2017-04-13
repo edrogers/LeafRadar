@@ -8,6 +8,8 @@ import madisonStreetsSubdivisions
 import madisonStreetsSubdivisions_v2
 import madisonStreetsSubdivisions_v3
 import madisonStreetsSubdivisions_v4
+import madisonStreetsSubdivisions_v5
+import madisonStreetsSubdivisions_v6
 
 dirName=os.path.dirname(os.path.realpath(__file__))
 dataSourceDir="{}/Leaf".format(dirName)
@@ -50,13 +52,27 @@ for mapPDF in mapPDFs :
         DoneStatuses      = madisonStreetsSubdivisions_v3.DoneStatuses
         CurrentStatuses   = madisonStreetsSubdivisions_v3.CurrentStatuses
         NextStatuses      = madisonStreetsSubdivisions_v3.NextStatuses
-    else:
+    elif int(timeStamp) < 1491919200:
         AllDistricts      = madisonStreetsSubdivisions_v4.AllDistricts
         AllDistrictsNames = madisonStreetsSubdivisions_v4.AllDistrictsNames
         NotDoneStatuses   = madisonStreetsSubdivisions_v4.NotDoneStatuses
         DoneStatuses      = madisonStreetsSubdivisions_v4.DoneStatuses
         CurrentStatuses   = madisonStreetsSubdivisions_v4.CurrentStatuses
         NextStatuses      = madisonStreetsSubdivisions_v4.NextStatuses
+    elif int(timeStamp) < 1492020000:
+        AllDistricts      = madisonStreetsSubdivisions_v5.AllDistricts
+        AllDistrictsNames = madisonStreetsSubdivisions_v5.AllDistrictsNames
+        NotDoneStatuses   = madisonStreetsSubdivisions_v5.NotDoneStatuses
+        DoneStatuses      = madisonStreetsSubdivisions_v5.DoneStatuses
+        CurrentStatuses   = madisonStreetsSubdivisions_v5.CurrentStatuses
+        NextStatuses      = madisonStreetsSubdivisions_v5.NextStatuses
+    else:
+        AllDistricts      = madisonStreetsSubdivisions_v6.AllDistricts
+        AllDistrictsNames = madisonStreetsSubdivisions_v6.AllDistrictsNames
+        NotDoneStatuses   = madisonStreetsSubdivisions_v6.NotDoneStatuses
+        DoneStatuses      = madisonStreetsSubdivisions_v6.DoneStatuses
+        CurrentStatuses   = madisonStreetsSubdivisions_v6.CurrentStatuses
+        NextStatuses      = madisonStreetsSubdivisions_v6.NextStatuses
 
 
     districtNum=int(digitsRegEx.search(districtRegEx.search(mapPDF).group()).group())-1

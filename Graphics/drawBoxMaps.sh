@@ -42,8 +42,14 @@ then
 elif [ ${asOfEpoch} -lt 1491602400 ];
 then
     mapsCoordFile="${baseDir}/madisonStreetsSubdivisions_v3.py"
-else
+elif [ ${asOfEpoch} -lt 1491919200 ];
+then
     mapsCoordFile="${baseDir}/madisonStreetsSubdivisions_v4.py"
+elif [ ${asOfEpoch} -lt 1492020000 ];
+then
+    mapsCoordFile="${baseDir}/madisonStreetsSubdivisions_v5.py"
+else
+    mapsCoordFile="${baseDir}/madisonStreetsSubdivisions_v6.py"
 fi
 mapsSourceImg="${mapsDir}/${asOfEpoch}-map${areaStrip}.gif"
 mapsCropImg="${areaDir}/${district}_crop_maps.png"
